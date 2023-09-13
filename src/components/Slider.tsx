@@ -28,10 +28,8 @@ const Slider: React.FC<SliderProps> = ({ images, width, height }) => {
   }
 
   useEventListener("mousemove", handleDragging);
-
-  const toggleDragging = (draggingState = false) => {
-    setDragging(draggingState);
-  }
+  useEventListener("mousedown", () => setDragging(true));
+  useEventListener("mouseup", () => setDragging(false));
 
   React.useEffect(() => {
     Promise.all(images.map(url => imageLoader(url)))
@@ -58,7 +56,7 @@ const Slider: React.FC<SliderProps> = ({ images, width, height }) => {
     }
   }, [imageList, width, height, displacement]);
 
-  return (<canvas ref={canvasRef} width={width} height={height} className={dragging ? 'dragging' : ''} onMouseDown={() => toggleDragging(true)} onMouseUp={() => toggleDragging(false)} />);
+  return (<canvas ref={canvasRef} width={width} height={height} className={dragging ? 'dragging' : 'notDragging'}  />);
 }
 
 export default Slider;
