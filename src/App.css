@@ -11,3 +11,7 @@
   margin: 0 auto;
   width: 600px;
 }
+
+.dragging {
+  cursor: grabbing;
+}
