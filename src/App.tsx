@@ -3,6 +3,7 @@ import Slider from './components/Slider'
 
 function App() {
   const images = [
+    '/slides/bm-5.png',
     '/slides/bm-1.jpg',
     '/slides/bm-2.jpg',
     '/slides/bm-3.jpg',
@@ -15,9 +16,9 @@ function App() {
 
   return (
     <>
-      <h1 className="title">Slider Component</h1>
+      <h3 className="title">Slider Component</h3>
       <div className="container">
-        <Slider images={images} onChange={onChange} width={600} height={400} />
+        <Slider images={images} onChange={onChange} width={640} height={400} />
       </div>
     </>
   )
