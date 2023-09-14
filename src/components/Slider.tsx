@@ -21,6 +21,8 @@ const Slider: React.FC<SliderProps> = ({ images, width, height }) => {
   const [dragging, setDragging] = React.useState(false);
   const [lastPosition, setLastPosition] = React.useState(0);
   const [displacement, setDisplacement] = React.useState(0);
+  const [prevX, setPrevX] = React.useState(0);
+  const [moveXAmount, setMoveXAmount] = React.useState(0);
   const [imageList, setImageList] = React.useState<SlideImage[]>([]);
 
   /**
@@ -31,24 +33,44 @@ const Slider: React.FC<SliderProps> = ({ images, width, height }) => {
   const handleDragging = (event: MouseEvent) => {
     if (!dragging) return;
 
-    const moveXAmount = ((event.pageX / window.innerWidth) * width - (width / 2));
-    const firstImage = imageList[0];
-    const lastImage = imageList[imageList.length - 1];
+    if (prevX > 0){
+      // Calculates the delta based on the previous mouse position.
+      const newMoveX = moveXAmount + (event.pageX - prevX);
+      setMoveXAmount(ma => (ma + event.pageX - prevX));
 
-    // If the mouse tries to move beyond the initial slide, don't move it
-    if ((moveXAmount + lastPosition) >= (firstImage?.sx)) return;
+      const firstImage = imageList[0];
+      const lastImage = imageList[imageList.length - 1];
 
-    // If the mouse tries to move beyond the last slide, don't move it
-    if ((moveXAmount + lastPosition) <= (lastImage?.sx * -1)) return;
+      // If the mouse tries to move beyond the initial slide, don't move it
+      if ((newMoveX + lastPosition) >= (firstImage?.sx)) return;
 
-    setDisplacement(lastPosition + moveXAmount);
+      // If the mouse tries to move beyond the last slide, don't move it
+      if ((newMoveX + lastPosition) <= (lastImage?.sx * -1)) return;
+
+      setDisplacement(lastPosition + newMoveX);
+    }
+    setPrevX(event.pageX);
+  }
+
+  /**
+   * Once the dragging starts/stops, resets the mouse tracking.
+   */
+  const resetMovement = () => {
+    setPrevX(0);
+    setMoveXAmount(0);
   }
 
   useEventListener("mousemove", handleDragging);
-  useEventListener("mousedown", () => setDragging(true));
+
+  useEventListener("mousedown", () => {
+    setDragging(true);
+    resetMovement();
+  });
+
   useEventListener("mouseup", () => {
     setDragging(false);
     setLastPosition(displacement);
+    resetMovement();
   });
 
   React.useEffect(() => {
