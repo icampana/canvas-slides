@@ -1,27 +1,25 @@
-# React + TypeScript + Vite
+# Canvas Slides Component
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project was built using Typescript + React and Vite.
 
-Currently, two official plugins are available:
+It creates a simple Slider component that can receive a list of images from different sources and create a draggable slider that uses the canvas to render the images.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![Slider Example](./public/example.png)
 
-## Expanding the ESLint configuration
+## Getting started
+To get the dev environment running you need to execute the following commands:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- `yarn install`
+- `yarn dev`
 
-- Configure the top-level `parserOptions` property like this:
+This will get a running version on your local machine, with all the selected components already installed.
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+If you want to get a compiled version which can be distributed, just execute:
+`yarn build`
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+And I'll generate a folder called `dist` which includes a minized version of the React runtime alongside the app with the component.
+
+# Adding more images
+
+To increase the list of images shown on the slider, all you need to do is to update the list being passed down on the main App,
+it will automatically load those images on the slider and calculate the right size so that it can be properly embedded.
