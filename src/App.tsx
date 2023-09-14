@@ -20,6 +20,7 @@ function App() {
       <div className="container">
         <Slider images={images} onChange={onChange} width={640} height={400} />
       </div>
+      <div className='slides-caption'> Drag to change image </div>
     </>
   )
 }
