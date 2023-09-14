@@ -10,7 +10,10 @@ type SliderProps = {
 }
 
 type SlideImage = {
-  initialPosition: number
+  // Slide x position
+  sx: number
+  // Image X position
+  ix: number
 } & ResizedImage;
 
 const Slider: React.FC<SliderProps> = ({ images, width, height }) => {
@@ -27,11 +30,17 @@ const Slider: React.FC<SliderProps> = ({ images, width, height }) => {
    */
   const handleDragging = (event: MouseEvent) => {
     if (!dragging) return;
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext('2d');
-    if (!context) return;
 
-    const moveXAmount = Math.round((event.pageX / window.innerWidth) * width - (width / 2));
+    const moveXAmount = ((event.pageX / window.innerWidth) * width - (width / 2));
+    const firstImage = imageList[0];
+    const lastImage = imageList[imageList.length - 1];
+
+    // If the mouse tries to move beyond the initial slide, don't move it
+    if ((moveXAmount + lastPosition) >= (firstImage?.sx)) return;
+
+    // If the mouse tries to move beyond the last slide, don't move it
+    if ((moveXAmount + lastPosition) <= (lastImage?.sx * -1)) return;
+
     setDisplacement(lastPosition + moveXAmount);
   }
 
@@ -45,16 +54,18 @@ const Slider: React.FC<SliderProps> = ({ images, width, height }) => {
   React.useEffect(() => {
     Promise.all(images.map(url => imageLoader(url)))
       .then(images => {
-        setImageList(images.map((image, index) => {
+        const updatedImages = images.map((image, index) => {
           // Calculates the new dimensions based on the slider size.
           const resizedImage = resizeImage(image, width, height);
           // Finds the right position to center it within the reserved space for that image.
           const initialX = Math.round((width - resizedImage.width) / 2);
           return ({
             ...resizedImage,
-            initialPosition: (index * width) + initialX
+            sx: (index * width),
+            ix: initialX
           })
-        }));
+        });
+        setImageList(updatedImages);
       })
   }, [images, height, width]);
 
@@ -65,13 +76,13 @@ const Slider: React.FC<SliderProps> = ({ images, width, height }) => {
 
       imageList.forEach(image => {
         // Redraws images using the current displacement (which "remembers" the last position).
-        context.drawImage(image.image, image.initialPosition + displacement, 0, image.width, image.height);
+        context.drawImage(image.image, image.sx + image.ix + displacement, 0, image.width, image.height);
         context.save();
       })
     }
   }, [imageList, width, height, displacement]);
 
-  return (<canvas ref={canvasRef} width={width} height={height} className={dragging ? 'dragging' : 'notDragging'} />);
+  return (<canvas ref={canvasRef} width={width} height={height} className={`slides-container ${dragging ? 'dragging' : 'notDragging'}`} />);
 }
 
 export default Slider;

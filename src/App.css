@@ -21,3 +21,7 @@
 .notDragging {
   cursor: grab;
 }
+
+.slides-container {
+  background-color: gainsboro;
+}
